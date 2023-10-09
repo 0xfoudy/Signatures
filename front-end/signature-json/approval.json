@@ -1,0 +1,26 @@
+{
+    
+    "BuyOrder": {
+        "token": "address",
+        "amount": "uint256"
+    },
+    "SellOrder": {
+        "token": "address",
+        "amount": "uint256"
+    },
+    "Identity": {
+        "userId": "uint256",
+        "wallet": "address"
+    },
+    "Approval": {
+        "operator": "address",
+        "allowance": "uint256"
+    },
+    "DomainSeparator": {
+        "name": "string",
+        "version": "string",
+        "chainId": "uint256",
+        "verifyingContract": "address",
+        "salt": "bytes32"
+    }
+}

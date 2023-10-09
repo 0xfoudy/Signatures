@@ -1,0 +1,9 @@
+{
+    "amount": 100, 
+    "token": "0x123123",
+    "id": 15,
+    "bidder": {
+        "userId": 323,
+        "wallet": "0x123123"
+    }
+}
