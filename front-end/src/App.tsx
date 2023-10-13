@@ -4,7 +4,7 @@ import { useAccount } from 'wagmi'
 import { Account } from './components/Account'
 import { Balance } from './components/Balance'
 import { NetworkSwitcher } from './components/NetworkSwitcher'
-import { ReadContract } from './components/ReadContract'
+import { ReadRareContract } from './components/ReadRareContract'
 import { SignEIP172 } from './components/Rareskills/SignEIP172'
 import { WriteContractPrepared } from './components/WriteContractPrepared'
 
@@ -33,7 +33,7 @@ export function App() {
           <Balance />
           <br />
           <h2>Read Contract</h2>
-          <ReadContract />
+          <ReadRareContract />
           <br />
           <hr />
           <h2>Sign with EIP172</h2>

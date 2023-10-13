@@ -4,6 +4,7 @@ import { type Address, useContractRead } from 'wagmi'
 
 import { wagmiContractConfig } from './contracts'
 
+
 export function ReadContract() {
   return (
     <div>
