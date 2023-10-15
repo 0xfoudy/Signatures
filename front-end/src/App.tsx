@@ -4,9 +4,8 @@ import { useAccount } from 'wagmi'
 import { Account } from './components/Account'
 import { Balance } from './components/Balance'
 import { NetworkSwitcher } from './components/NetworkSwitcher'
-import { ReadRareContract } from './components/ReadRareContract'
+import { ReadRareContract } from './components/Rareskills/ReadRareContract'
 import { SignEIP172 } from './components/Rareskills/SignEIP172'
-import { WriteContractPrepared } from './components/WriteContractPrepared'
 
 
 
@@ -14,7 +13,7 @@ export function App() {
 
   return (
     <>
-      <h1>wagmi + Web3Modal + Vite</h1>
+      <h1>Rare20-Permit</h1>
 
       <Web3Button />
 

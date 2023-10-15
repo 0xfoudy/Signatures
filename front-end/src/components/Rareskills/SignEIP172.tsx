@@ -1,14 +1,9 @@
 import { useEffect, useState } from 'react'
-import { recoverMessageAddress } from 'viem'
-import { type Address, useSignMessage } from 'wagmi'
+import { type Address, useSignTypedData, useNetwork, useAccount} from 'wagmi'
+import { recoverTypedDataAddress } from 'viem'
+import { Rare20PermitContractConfig } from '../contracts'
+import { getAddresses, Nonces } from './ReadRareContract'
 
-const domain = [
-  { name: "name", type: "string" },
-  { name: "version", type: "string" },
-  { name: "chainId", type: "uint256" },
-  { name: "verifyingContract", type: "address" },
-  { name: "salt", type: "bytes32" },
-];
 const bid = [
   { name: "amount", type: "uint256" },
   { name: "bidder", type: "Identity" },
@@ -18,77 +13,85 @@ const identity = [
   { name: "wallet", type: "address" },
 ];
 
-const contract = ""; // TODO: GET CONTRACT ADDRESS
-const chainID = 1; // TODO: GET CHAIN ID
-const _operator = ""; // TODO: GET OPERATOR
 
-export function SignEIP172() { 
+
+
+    export function SignEIP172() {
+      
+      const contract = Rare20PermitContractConfig.address;
+      const chainID = useNetwork().chain?.id;
+      const myAccount = useAccount().address;
     
-  const domainData = {
-    name: "SignEIP172",
-    version: "1",
-    chainId: chainID,
-    verifyingContract: contract,
-    salt: "0xf2d857f4a3edcb9b78b4d503bfe733db1e3f6cdc2b7971ee739626c97e86a558"
-  };
-  var message = {
-    approval: {
-        operator: _operator,
-        amount: 1000
-    }
-  };
+      const amount = 1000;
+      
+      
+     // const operator = getAddresses()[1];
+      const operator = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
 
-    function generateEIP172Signature(message: { message: string; }) {
-        return message;
-    }
+      const types = {
+          Permit: [
+            { name: "owner", type: "address"},
+            { name: "spender", type: "address"},
+            { name: "value", type: "uint256"},
+            { name: "nonce", type: "uint256"},
+          ],
+        };
+
+      const primaryType = 'Permit';
+
+      const domain = {
+        name: "Signing172",
+        version: "1",
+        chainId: chainID,
+        verifyingContract: contract,
+        salt: '0x1233213371233213371233213371233213371233213371233213371233213371' as `0x${string}`,
+      }
+      console.log( Nonces(myAccount as Address))
+
+      const message = {
+        owner: myAccount,
+        spender: operator,
+        value: amount,
+        nonce: Nonces(myAccount as Address),
+      };
+
+
+      const { data, error, isLoading, signTypedData } = useSignTypedData({
+        domain,
+        message,
+        primaryType,
+        types,
+      })
 
     const [recoveredAddress, setRecoveredAddress] = useState<Address>()
-    const {
-      data: signature,
-      variables,
-      error,
-      isLoading,
-      signMessage,
-    } = useSignMessage()
-
     useEffect(() => {
-    ;(async () => {
-      if (variables?.message && signature) {
-        const recoveredAddress = await recoverMessageAddress({
-          message: variables?.message,
-          signature,
-        })
-        setRecoveredAddress(recoveredAddress)
-      }
-    })()
-    }, [signature, variables?.message])
-
+      if (!data) return
+      ;(async () => {
+        setRecoveredAddress(
+          await recoverTypedDataAddress({
+            domain,
+            types,
+            message,
+            primaryType,
+            signature: data,
+          }),
+        )
+      })()
+    }, [data])
+  
     return (
-        <>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault()
-              const element = event.target as HTMLFormElement
-              const formData = new FormData(element)
-              const message = formData.get('message') as string
-              generateEIP172Signature({ message })
-            }}
-          >
-            <input name="message" type="text" required />
-            <button disabled={isLoading} type="submit">
-              {isLoading ? 'Check Wallet' : 'Sign Message'}
-            </button>
-          </form>
-    
-          {signature && (
-            <div>
-              <div>Signature: {signature}</div>
-              <div>Recovered address: {recoveredAddress}</div>
-            </div>
-          )}
-          {error && <div>Error: {error?.message}</div>}
-        </>
-      )
-
-    
-}
+      <>
+        <button disabled={isLoading} onClick={() => signTypedData()}>
+          {isLoading ? 'Check Wallet' : 'Sign Message'}
+        </button>
+  
+        {data && (
+          <div>
+            <div>Signature: {data}</div>
+            <div>Recovered address {recoveredAddress}</div>
+          </div>
+        )}
+        {error && <div>Error: {error?.message}</div>}
+      </>
+    )
+  }

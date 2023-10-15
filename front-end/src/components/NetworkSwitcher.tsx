@@ -1,6 +1,6 @@
 import { useNetwork, useSwitchNetwork } from 'wagmi'
-import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
-import { mainnet, optimism, polygon, foundry } from '@wagmi/core/chains'
+
+
 
 
 export function NetworkSwitcher() {
@@ -11,7 +11,6 @@ export function NetworkSwitcher() {
   return (
     <div>
       <div>
-        connector.connect(31337);
         Connected to {chain?.name ?? chain?.id}
         {chain?.unsupported && ' (unsupported)'}
       </div>
