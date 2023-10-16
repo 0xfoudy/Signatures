@@ -3,7 +3,6 @@ import { BaseError } from 'viem'
 import { type Address, useContractRead } from 'wagmi'
 
 import { Rare20PermitContractConfig } from '../contracts'
-import { BigNumber, utils } from 'ethers';
 
 
 export function ReadRareContract() {
